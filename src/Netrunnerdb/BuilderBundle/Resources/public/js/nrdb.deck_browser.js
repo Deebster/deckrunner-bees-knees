@@ -3,7 +3,7 @@ if (typeof NRDB != "object")
 
 NRDB.deck_browser = {};
 (function(deck_browser, $) {
-	var codes = null;
+	var images = null;
 
 	function switch_left() {
 
@@ -40,14 +40,14 @@ NRDB.deck_browser = {};
 			else $(elt).hide();
 		});
 		$('#deck_browser_right > div').each(function (i, elt) {
-			if(codes.length - 1 - i > index) $(elt).show();
+			if(images.length - 1 - i > index) $(elt).show();
 			else $(elt).hide();
 		});
 	}
 	
 	deck_browser.update = function() {
 
-		codes = [ Identity.code ];
+		images = [ Identity.imagesrc ];
 		NRDB.data.cards({
 			indeck : {
 				'gt' : 0
@@ -57,11 +57,11 @@ NRDB.deck_browser = {};
 			}
 		}).order('type_code,title').each(function(record) {
 			for (var i = 0; i < record.indeck; i++) {
-				codes.push(record.code);
+				images.push(record.imagesrc);
 			}
 		});
-		for (var i = 0; i < codes.length; i++) {
-			var div = $('<div><img src="/web/bundles/netrunnerdbcards/images/cards/en/' + codes[i] + '.png"></div>');
+		for (var i = 0; i < images.length; i++) {
+			var div = $('<div><img src="' + images[i] + '"></div>');
 			$('#deck_browser_left').append(div.data('index', i));
 			$('#deck_browser_center').append(div.clone().data('index', i));
 			$('#deck_browser_right').prepend(div.clone().data('index', i));
