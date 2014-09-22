@@ -772,4 +772,48 @@ class BuilderController extends Controller
         unlink($file);
         return $response;
     }
+    
+    public function uploadallAction(Request $request)
+    {
+        // time-consuming task
+        ini_set('max_execution_time', 300);
+        
+        $filetype = filter_var($request->get('type'), FILTER_SANITIZE_STRING);
+        $uploadedFile = $request->files->get('uparchive');
+        if (! isset($uploadedFile))
+            return new Response('No file');
+        
+        $origname = $uploadedFile->getClientOriginalName();
+        $origext = $uploadedFile->getClientOriginalExtension();
+        $filename = $uploadedFile->getPathname();
+    
+        if (function_exists("finfo_open")) {
+            // return mime type ala mimetype extension
+            $finfo = finfo_open(FILEINFO_MIME);
+    
+            // check to see if the mime-type is 'zip'
+            if(substr(finfo_file($finfo, $filename), 0, 15) !== 'application/zip')
+                return new Response('Bad file');
+        }
+        
+        $zip = new \ZipArchive;
+        $res = $zip->open($filename);
+        if ($res === TRUE) {
+            for ($i = 0; $i < $zip->numFiles; $i++) {
+                 $name = $zip->getNameIndex($i);
+                 $parse = $this->parseTextImport($zip->getFromIndex($i));
+                 
+                 $deck = new Deck();
+                 $this->get('decks')->save($this->getUser(), $deck, null, $name, '', '', $parse['content']);
+            }
+        }
+        $zip->close();
+
+        $this->get('session')
+            ->getFlashBag()
+            ->set('notice', "Decks imported.");
+        
+        return $this->redirect($this->generateUrl('decks_list'));
+    }
 }
+

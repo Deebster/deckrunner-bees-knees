@@ -7,6 +7,7 @@ $(function() {
 	$('#btn-group-deck').on('click', 'button[id],a[id]', do_action_deck);
 	$('#btn-group-selection').on('click', 'button[id],a[id]', do_action_selection);
 	$('#btn-group-sort').on('click', 'button[id],a[id]', do_action_sort);
+	$('#decks_upload_all').on('click', decks_upload_all);
 	
 	$('#menu-sort').on({
 		change: function(event) {
@@ -59,6 +60,10 @@ $(function() {
 	    }
 	});
 });
+
+function decks_upload_all() {
+	$('#archiveModal').modal('show');
+}
 
 function do_diff(ids) {
 	if(ids.length < 2) return;

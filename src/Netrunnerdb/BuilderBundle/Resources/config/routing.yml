@@ -140,6 +140,12 @@ decks_download_all:
     defaults:
         _controller: NetrunnerdbBuilderBundle:Builder:downloadall
 
+decks_upload_all:
+    pattern: /deck/import/all
+    methods: [POST]
+    defaults:
+        _controller: NetrunnerdbBuilderBundle:Builder:uploadall
+
 deck_export_octgn:
     pattern: /deck/export/octgn/{deck_id}
     methods: [GET]
