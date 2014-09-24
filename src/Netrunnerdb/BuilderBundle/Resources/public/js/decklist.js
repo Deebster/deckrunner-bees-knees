@@ -70,7 +70,7 @@ function setup_comment_form() {
 						},
 						replace : function(value) {
 							return '[' + value.title + ']('
-									+ Routing.generate('netrunnerdb_netrunner_cards_zoom', {card_code:value.code})
+									+ Routing.generate('cards_zoom', {card_code:value.code})
 									+ ')';
 						},
 						index : 1

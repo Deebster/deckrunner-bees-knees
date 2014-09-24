@@ -249,7 +249,7 @@ function update_deck(options) {
 	InfluenceLimit = 0;
 	var cabinet = {};
 	var parts = Identity.title.split(/: /);
-	$('#identity').html('<a href="'+Routing.generate('netrunnerdb_netrunner_cards_zoom', {card_code:Identity.code})+'" data-target="#cardModal" data-remote="false" class="card" data-toggle="modal" data-index="'+Identity.code+'">'+parts[0]+' <small>'+parts[1]+'</small></a>');
+	$('#identity').html('<a href="'+Routing.generate('cards_zoom', {card_code:Identity.code})+'" data-target="#cardModal" data-remote="false" class="card" data-toggle="modal" data-index="'+Identity.code+'">'+parts[0]+' <small>'+parts[1]+'</small></a>');
 	$('#img_identity').prop('src', Identity.imagesrc);
 	InfluenceLimit = Identity.influencelimit;
 	if(typeof InfluenceLimit === "undefined") InfluenceLimit = Number.POSITIVE_INFINITY;
@@ -300,7 +300,7 @@ function update_deck(options) {
 			criteria = 'cards';
 		}
 
-		var item = $('<div>'+record.indeck+'x <a href="'+Routing.generate('netrunnerdb_netrunner_cards_zoom', {card_code:record.code})+'" class="card" data-toggle="modal" data-remote="false" data-target="#cardModal" data-index="'+record.code+'">'+record.title+'</a> '+additional_info+'</div>');
+		var item = $('<div>'+record.indeck+'x <a href="'+Routing.generate('cards_zoom', {card_code:record.code})+'" class="card" data-toggle="modal" data-remote="false" data-target="#cardModal" data-index="'+record.code+'">'+record.title+'</a> '+additional_info+'</div>');
 		item.appendTo($('#deck-content .deck-'+criteria));
 		
 		cabinet[criteria] |= 0;

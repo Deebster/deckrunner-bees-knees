@@ -10,7 +10,7 @@ NetrunnerdbCardsBundle_admin_card:
     resource: "@NetrunnerdbCardsBundle/Resources/config/routing/card.yml"
     prefix:   /admin/card
 
-netrunnerdb_netrunner_cards_list:
+cards_list:
     pattern:  /{_locale}/set/{pack_code}/{view}/{sort}
     defaults:
         _controller: NetrunnerdbCardsBundle:Search:list
@@ -20,7 +20,7 @@ netrunnerdb_netrunner_cards_list:
     requirements:
         _locale: en|fr|de|es|it|pl
 
-netrunnerdb_netrunner_cards_zoom:
+cards_zoom:
     pattern:  /{_locale}/card/{card_code}
     defaults:
         _controller: NetrunnerdbCardsBundle:Search:zoom
@@ -29,7 +29,7 @@ netrunnerdb_netrunner_cards_zoom:
         _locale: en|fr|de|es|it|pl
         card_code: \d+
 
-netrunnerdb_netrunner_cards_cycle:
+cards_cycle:
     pattern:  /{_locale}/cycle/{cycle_code}/{view}/{sort}
     defaults:
         _controller: NetrunnerdbCardsBundle:Search:cycle
@@ -39,7 +39,7 @@ netrunnerdb_netrunner_cards_cycle:
     requirements:
         _locale: en|fr|de|es|it|pl
 
-netrunnerdb_netrunner_cards_search:
+cards_search:
     pattern:  /{_locale}/search
     defaults:
         _controller: NetrunnerdbCardsBundle:Default:search
@@ -47,17 +47,17 @@ netrunnerdb_netrunner_cards_search:
     requirements:
         _locale: en|fr|de|es|it|pl
 
-netrunnerdb_netrunner_cards_find:
+cards_find:
     pattern:  /find/
     defaults:
         _controller: NetrunnerdbCardsBundle:Search:find
 
-netrunnerdb_netrunner_cards_processSearchForm:
+cards_processSearchForm:
     pattern:  /process/
     defaults:
         _controller: NetrunnerdbCardsBundle:Search:process
 
-netrunnerdb_netrunner_cards_about:
+cards_about:
     pattern:  /{_locale}/about
     defaults:
         _controller: NetrunnerdbCardsBundle:Default:about
@@ -65,7 +65,7 @@ netrunnerdb_netrunner_cards_about:
     requirements:
         _locale: en|fr|de|es|it|pl
 
-netrunnerdb_netrunner_cards_api:
+cards_api:
     pattern:  /{_locale}/apidoc
     defaults:
         _controller: NetrunnerdbCardsBundle:Default:apidoc
@@ -73,7 +73,7 @@ netrunnerdb_netrunner_cards_api:
     requirements:
         _locale: en|fr|de|es|it|pl
 
-netrunnerdb_netrunner_cards_rulings:
+cards_rulings:
     pattern:  /{_locale}/rules
     defaults:
         _controller: NetrunnerdbCardsBundle:Default:rules

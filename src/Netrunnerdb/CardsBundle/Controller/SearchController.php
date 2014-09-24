@@ -116,7 +116,7 @@ class SearchController extends Controller
 		if($sort != "name") $find['sort'] = $sort;
 		if($view != "list") $find['view'] = $view;
 		if($locale != "en") $find['_locale'] = $locale;
-		return $this->redirect($this->generateUrl('netrunnerdb_netrunner_cards_find').'?'.http_build_query($find));
+		return $this->redirect($this->generateUrl('cards_find').'?'.http_build_query($find));
 	}
 
 	// target of the search input
@@ -135,7 +135,7 @@ class SearchController extends Controller
 		// we may be able to redirect to a better url if the search is on a single set
 		$conditions = $this->get('cards_data')->syntax($q);
 		if(count($conditions) == 1 && count($conditions[0]) == 3 && $conditions[0][1] == ":" && $conditions[0][0] == "e") {
-	        $url = $this->get('router')->generate('netrunnerdb_netrunner_cards_list', array('pack_code' => $conditions[0][2], 'view' => $view, 'sort' => $sort, '_locale' => $request->getLocale()));
+	        $url = $this->get('router')->generate('cards_list', array('pack_code' => $conditions[0][2], 'view' => $view, 'sort' => $sort, '_locale' => $request->getLocale()));
 	        return $this->redirect($url);
 	    }
 		
@@ -325,11 +325,11 @@ class SearchController extends Controller
 		$next = $em->getRepository('NetrunnerdbCardsBundle:Card')->findOneBy(array("pack" => $card->getPack(), "number" => $card->getNumber()+1));
 		return $this->renderView('NetrunnerdbCardsBundle:Search:setnavigation.html.twig', array(
 			"prevtitle" => $prev ? $prev->getTitle($locale) : "",
-			"prevhref" => $prev ? $this->get('router')->generate('netrunnerdb_netrunner_cards_zoom', array('card_code' => $prev->getCode(), "_locale" => $locale)) : "",
+			"prevhref" => $prev ? $this->get('router')->generate('cards_zoom', array('card_code' => $prev->getCode(), "_locale" => $locale)) : "",
 			"nexttitle" => $next ? $next->getTitle($locale) : "",
-			"nexthref" => $next ? $this->get('router')->generate('netrunnerdb_netrunner_cards_zoom', array('card_code' => $next->getCode(), "_locale" => $locale)) : "",
+			"nexthref" => $next ? $this->get('router')->generate('cards_zoom', array('card_code' => $next->getCode(), "_locale" => $locale)) : "",
 			"settitle" => $card->getPack()->getName(),
-			"sethref" => $this->get('router')->generate('netrunnerdb_netrunner_cards_list', array('pack_code' => $card->getPack()->getCode(), "_locale" => $locale)),
+			"sethref" => $this->get('router')->generate('cards_list', array('pack_code' => $card->getPack()->getCode(), "_locale" => $locale)),
 			"_locale" => $locale,
 		));
 	}
@@ -338,7 +338,7 @@ class SearchController extends Controller
 	{
 		$locale = $this->getRequest()->getLocale();
 		return $this->renderView('NetrunnerdbCardsBundle:Search:paginationitem.html.twig', array(
-			"href" => $q == null ? "" : $this->get('router')->generate('netrunnerdb_netrunner_cards_find', array('q' => $q, 'view' => $v, 'sort' => $s, 'page' => $pi, '_locale' => $locale)),
+			"href" => $q == null ? "" : $this->get('router')->generate('cards_find', array('q' => $q, 'view' => $v, 'sort' => $s, 'page' => $pi, '_locale' => $locale)),
 			"ps" => $ps,
 			"pi" => $pi,
 			"s" => $ps*($pi-1)+1,

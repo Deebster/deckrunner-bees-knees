@@ -331,7 +331,7 @@ $(function() {
 						},
 						replace : function(value) {
 							return '[' + value.title + ']('
-									+ Routing.generate('netrunnerdb_netrunner_cards_zoom', {card_code:value.code})
+									+ Routing.generate('cards_zoom', {card_code:value.code})
 									+ ')';
 						},
 						index : 1
@@ -501,7 +501,7 @@ function build_div(record) {
 				+ '"><td><div class="btn-group" data-toggle="buttons">'
 				+ radios
 				+ '</div></td><td><a class="card" href="'
-				+ Routing.generate('netrunnerdb_netrunner_cards_zoom', {card_code:record.code})
+				+ Routing.generate('cards_zoom', {card_code:record.code})
 				+ '" data-target="#cardModal" data-remote="false" data-toggle="modal">'
 				+ record.title + '</a></td><td class="influence-' + faction
 				+ '">' + influ + '</td><td class="type" title="' + record.type
@@ -518,7 +518,7 @@ function build_div(record) {
 				+ '">'
 				+ '<div class="media">'
 				+ '<a class="pull-left card" href="'
-				+ Routing.generate('netrunnerdb_netrunner_cards_zoom', {card_code:record.code})
+				+ Routing.generate('cards_zoom', {card_code:record.code})
 				+ '" data-target="#cardModal" data-remote="false" data-toggle="modal">'
 				+ '    <img class="media-object" src="/web/bundles/netrunnerdbcards/images/cards/en/'
 				+ record.code
@@ -526,7 +526,7 @@ function build_div(record) {
 				+ '</a>'
 				+ '<div class="media-body">'
 				+ '    <h4 class="media-heading"><a class="card" href="'
-				+ Routing.generate('netrunnerdb_netrunner_cards_zoom', {card_code:record.code})
+				+ Routing.generate('cards_zoom', {card_code:record.code})
 				+ '" data-target="#cardModal" data-remote="false" data-toggle="modal">'
 				+ record.title + '</a></h4>'
 				+ '    <div class="btn-group" data-toggle="buttons">' + radios
@@ -541,7 +541,7 @@ function build_div(record) {
 				+ '">'
 				+ '<div class="media">'
 				+ '<a class="pull-left card" href="'
-				+ Routing.generate('netrunnerdb_netrunner_cards_zoom', {card_code:record.code})
+				+ Routing.generate('cards_zoom', {card_code:record.code})
 				+ '" data-target="#cardModal" data-remote="false" data-toggle="modal">'
 				+ '    <img class="media-object" src="/web/bundles/netrunnerdbcards/images/cards/en/'
 				+ record.code
@@ -549,7 +549,7 @@ function build_div(record) {
 				+ '</a>'
 				+ '<div class="media-body">'
 				+ '    <h5 class="media-heading"><a class="card" href="'
-				+ Routing.generate('netrunnerdb_netrunner_cards_zoom', {card_code:record.code})
+				+ Routing.generate('cards_zoom', {card_code:record.code})
 				+ '" data-target="#cardModal" data-remote="false" data-toggle="modal">'
 				+ record.title + '</a></h5>'
 				+ '    <div class="btn-group" data-toggle="buttons">' + radios

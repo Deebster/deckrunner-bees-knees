@@ -1,5 +1,5 @@
 <div class="row">
-	<form method="GET" action="{{ path('netrunnerdb_netrunner_cards_find') }}" id="search-form" class="form-inline" role="form">
+	<form method="GET" action="{{ path('cards_find') }}" id="search-form" class="form-inline" role="form">
 		<div class="col-sm-4 form-group">
 			<input style="width:70%" class="form-control" size="30" name="q" id="search-input" tabindex="1" value="{{ q|default('') }}" title="Search tips:
    e: extension (word)

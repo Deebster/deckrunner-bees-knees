@@ -280,6 +280,16 @@ decklist_delete:
     requirements:
         decklist_id: \d+
 
+decklists_diff:
+    pattern: /{_locale}/decklists/diff/{decklist1_id}/{decklist2_id}
+    methods: [GET]
+    defaults:
+        _controller: NetrunnerdbBuilderBundle:Diff:decklistDiff
+    requirements:
+        _locale: en|fr|de|es|it|pl
+        decklist1_id: \d+
+        decklist2_id: \d+
+
 user_profile:
     pattern: /{_locale}/user/profile
     methods: [GET]

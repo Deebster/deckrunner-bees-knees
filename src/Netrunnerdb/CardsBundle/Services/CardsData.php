@@ -49,7 +49,7 @@ class CardsData
 					"available" => $pack->getReleased() ? $pack->getReleased()->format('Y-m-d') : '',
 					"known" => intval($real),
 					"total" => $max,
-					"url" => $this->router->generate('netrunnerdb_netrunner_cards_list', array('pack_code' => $pack->getCode()), true),
+					"url" => $this->router->generate('cards_list', array('pack_code' => $pack->getCode()), true),
 			);
 		}
 		return $packs;
@@ -74,7 +74,7 @@ class CardsData
 						"available" => $pack->getReleased() ? $pack->getReleased()->format('Y-m-d') : '',
 						"known" => intval($real),
 						"total" => $max,
-						"url" => $this->router->generate('netrunnerdb_netrunner_cards_list', array('pack_code' => $pack->getCode()), true),
+						"url" => $this->router->generate('cards_list', array('pack_code' => $pack->getCode()), true),
 						"search" => "e:".$pack->getCode(),
 						"packs" => '',
 				);
@@ -89,7 +89,7 @@ class CardsData
 				        "cyclenumber" => $cycle->getNumber(),
 						"known" => intval($sreal),
 						"total" => $smax,
-						"url" => $this->router->generate('netrunnerdb_netrunner_cards_cycle', array('cycle_code' => $cycle->getCode()), true),
+						"url" => $this->router->generate('cards_cycle', array('cycle_code' => $cycle->getCode()), true),
 						"search" => 'c:'.$cycle->getCode(),
 						"packs" => $packs,
 				);
@@ -397,7 +397,7 @@ class CardsData
 				"set_code" => $alt->getPack()->getCode(),
 				"number" => $alt->getNumber(),
 				"code" => $alt->getCode(),
-				"url" => $this->router->generate('netrunnerdb_netrunner_cards_zoom', array('card_code' => $alt->getCode()), true),
+				"url" => $this->router->generate('cards_zoom', array('card_code' => $alt->getCode()), true),
 			);
 		}
 		return $alternatives;
@@ -462,7 +462,7 @@ class CardsData
 		        "cyclenumber" => $card->getPack()->getCycle()->getNumber(),
 		);
 
-		$cardinfo['url'] = $this->router->generate('netrunnerdb_netrunner_cards_zoom', array('card_code' => $card->getCode(), '_locale' => $locale), true);
+		$cardinfo['url'] = $this->router->generate('cards_zoom', array('card_code' => $card->getCode(), '_locale' => $locale), true);
 
 		$cardinfo['imagesrc'] = "";
 		
