@@ -59,12 +59,11 @@ class SocialController extends Controller
     /*
 	 * creates a new decklist from a deck (publish action)
 	 */
-    public function newAction ()
+    public function newAction (Request $request)
     {
         /* @var $em \Doctrine\ORM\EntityManager */
         $em = $this->get('doctrine')->getManager();
         
-        $request = $this->getRequest();
         $deck_id = filter_var($request->request->get('deck_id'), FILTER_SANITIZE_NUMBER_INT);
         /* @var $deck \Netrunnerdb\BuilderBundle\Entity\Deck */
         $deck = $this->getDoctrine()
@@ -147,7 +146,7 @@ class SocialController extends Controller
 	 * @param integer $limit
 	 * @return \Doctrine\DBAL\Driver\PDOStatement
 	 */
-    public function favorites ($start = 0, $limit = 30)
+    public function favorites ($start = 0, $limit = 30, Request $request)
     {
 
         if (! $this->getUser())
@@ -198,7 +197,7 @@ class SocialController extends Controller
 	 * @param integer $limit
 	 * @return \Doctrine\DBAL\Driver\PDOStatement
 	 */
-    public function by_author ($user_id, $start = 0, $limit = 30)
+    public function by_author ($user_id, $start = 0, $limit = 30, Request $request)
     {
         
         /* @var $dbh \Doctrine\DBAL\Driver\PDOConnection */
@@ -242,7 +241,7 @@ class SocialController extends Controller
 	 * @param integer $limit
 	 * @return \Doctrine\DBAL\Driver\PDOStatement
 	 */
-    public function popular ($start = 0, $limit = 30)
+    public function popular ($start = 0, $limit = 30, Request $request)
     {
         /* @var $dbh \Doctrine\DBAL\Driver\PDOConnection */
         $dbh = $this->get('doctrine')->getConnection();
@@ -284,7 +283,7 @@ class SocialController extends Controller
 	 * @param integer $limit
 	 * @return \Doctrine\DBAL\Driver\PDOStatement
 	 */
-    public function halloffame ($start = 0, $limit = 30)
+    public function halloffame ($start = 0, $limit = 30, Request $request)
     {
         /* @var $dbh \Doctrine\DBAL\Driver\PDOConnection */
         $dbh = $this->get('doctrine')->getConnection();
@@ -325,7 +324,7 @@ class SocialController extends Controller
 	 * @param integer $limit
 	 * @return \Doctrine\DBAL\Driver\PDOStatement
 	 */
-    public function hottopics ($start = 0, $limit = 30)
+    public function hottopics ($start = 0, $limit = 30, Request $request)
     {
         /* @var $dbh \Doctrine\DBAL\Driver\PDOConnection */
         $dbh = $this->get('doctrine')->getConnection();
@@ -367,7 +366,7 @@ class SocialController extends Controller
 	 * @param integer $limit
 	 * @return \Doctrine\DBAL\Driver\PDOStatement
 	 */
-    public function faction ($faction_code, $start = 0, $limit = 30)
+    public function faction ($faction_code, $start = 0, $limit = 30, Request $request)
     {
         /* @var $dbh \Doctrine\DBAL\Driver\PDOConnection */
         $dbh = $this->get('doctrine')->getConnection();
@@ -411,7 +410,7 @@ class SocialController extends Controller
 	 * @param integer $limit
 	 * @return \Doctrine\DBAL\Driver\PDOStatement
 	 */
-    public function lastpack ($pack_code, $start = 0, $limit = 30)
+    public function lastpack ($pack_code, $start = 0, $limit = 30, Request $request)
     {
         /* @var $dbh \Doctrine\DBAL\Driver\PDOConnection */
         $dbh = $this->get('doctrine')->getConnection();
@@ -455,7 +454,7 @@ class SocialController extends Controller
 	 * @param integer $limit
 	 * @return \Doctrine\DBAL\Driver\PDOStatement
 	 */
-    public function recent ($start = 0, $limit = 30)
+    public function recent ($start = 0, $limit = 30, Request $request)
     {
         /* @var $dbh \Doctrine\DBAL\Driver\PDOConnection */
         $dbh = $this->get('doctrine')->getConnection();
@@ -499,10 +498,9 @@ class SocialController extends Controller
 	 * @param integer $limit
 	 * @return \Doctrine\DBAL\Driver\PDOStatement
 	 */
-    public function find ($start = 0, $limit = 30)
+    public function find ($start = 0, $limit = 30, Request $request)
     {
 
-        $request = $this->getRequest();
         $cards_code = $request->query->get('cards');
         $faction_code = filter_var($request->query->get('faction'), FILTER_SANITIZE_STRING);
         $lastpack_code = filter_var($request->query->get('lastpack'), FILTER_SANITIZE_STRING);
@@ -602,10 +600,67 @@ class SocialController extends Controller
     
     }
     
+    private function searchForm(Request $request)
+    {
+        $cards_code = $request->query->get('cards');
+        $faction_code = filter_var($request->query->get('faction'), FILTER_SANITIZE_STRING);
+        $lastpack_code = filter_var($request->query->get('lastpack'), FILTER_SANITIZE_STRING);
+        $author_name = filter_var($request->query->get('author'), FILTER_SANITIZE_STRING);
+        $decklist_title = filter_var($request->query->get('title'), FILTER_SANITIZE_STRING);
+        $sort = $request->query->get('sort');
+        
+        $dbh = $this->get('doctrine')->getConnection();
+        
+        $packs = $dbh->executeQuery(
+                "SELECT
+				p.name" . ($this->getRequest()
+        				        ->getLocale() == "en" ? '' : '_' . $this->getRequest()
+        				        ->getLocale()) . " name,
+				p.code
+				from pack p
+				where p.released is not null
+				order by p.released desc")
+        				->fetchAll();
+        
+        foreach($packs as $i => $pack) {
+            $packs[$i]['selected'] = ($pack['code'] == $lastpack_code) ? ' selected="selected"' : '';
+        }
+        $params = array(
+                'packs' => $packs,
+                'author' => $author_name,
+                'title' => $decklist_title
+        );
+        $params['sort_'.$sort] = ' selected="selected"';
+        $params['faction_'.substr($faction_code, 0, 1)] = ' selected="selected"';
+
+        if (! empty($cards_code) && is_array($cards_code)) {
+            $cards = $dbh->executeQuery(
+                    "SELECT
+    				c.title" . ($this->getRequest()
+            				        ->getLocale() == "en" ? '' : '_' . $this->getRequest()
+            				        ->getLocale()) . " title,
+    				c.code,
+                    f.code faction_code
+    				from card c
+                    join faction f on f.id=c.faction_id
+                    where c.code in (?)
+    				order by c.code desc", array($cards_code), array(\Doctrine\DBAL\Connection::PARAM_INT_ARRAY))
+            				->fetchAll();
+
+            $params['cards'] = '';
+            foreach($cards as $card) {
+                $params['cards'] .= $this->renderView('NetrunnerdbBuilderBundle:Search:card.html.twig', $card);
+            }
+                        
+        }
+        
+        return $this->renderView('NetrunnerdbBuilderBundle:Search:form.html.twig', $params);
+    }
+    
     /*
 	 * displays the lists of decklists
 	 */
-    public function listAction ($type, $code = null, $page = 1)
+    public function listAction ($type, $code = null, $page = 1, Request $request)
     {
         $response = new Response();
         $response->setPublic();
@@ -617,23 +672,24 @@ class SocialController extends Controller
         $start = ($page - 1) * $limit;
         
         $pagetitle = "Decklists";
+        $header = '';
         
         switch ($type) {
             case 'recent':
-                $result = $this->recent($start, $limit);
+                $result = $this->recent($start, $limit, $request);
                 $pagetitle = "Recent Decklists";
                 break;
             case 'halloffame':
-                $result = $this->halloffame($start, $limit);
+                $result = $this->halloffame($start, $limit, $request);
                 $pagetitle = "Hall of Fame";
                 break;
             case 'hottopics':
-                $result = $this->hottopics($start, $limit);
+                $result = $this->hottopics($start, $limit, $request);
                 $pagetitle = "Hot Topics";
                 break;
             case 'favorites':
                 $response->setPrivate();
-                $result = $this->favorites($start, $limit);
+                $result = $this->favorites($start, $limit, $request);
                 $pagetitle = "Favorite Decklists";
                 break;
             case 'mine':
@@ -644,17 +700,18 @@ class SocialController extends Controller
                 }
                 else
                 {
-                    $result = $this->by_author($this->getUser()->getId(), $start, $limit);
+                    $result = $this->by_author($this->getUser()->getId(), $start, $limit, $request);
                 }
                 $pagetitle = "My Decklists";
                 break;
             case 'find':
-                $result = $this->find($start, $limit);
+                $result = $this->find($start, $limit, $request);
                 $pagetitle = "Decklist search results";
+                $header = $this->searchForm($request);
                 break;
             case 'popular':
             default:
-                $result = $this->popular($start, $limit);
+                $result = $this->popular($start, $limit, $request);
                 $pagetitle = "Popular Decklists";
                 break;
         }
@@ -720,6 +777,7 @@ class SocialController extends Controller
                         'factions' => $factions,
                         'url' => $this->getRequest()
                             ->getRequestUri(),
+                        'header' => $header,
                         'route' => $route,
                         'pages' => $pages,
                         'prevurl' => $currpage == 1 ? null : $this->generateUrl($route, $params + array(
@@ -735,7 +793,7 @@ class SocialController extends Controller
     /*
 	 * displays the content of a decklist along with comments, siblings, similar, etc.
 	 */
-    public function viewAction ($decklist_id, $decklist_name)
+    public function viewAction ($decklist_id, $decklist_name, Request $request)
     {
         $response = new Response();
         $response->setPublic();
@@ -855,7 +913,7 @@ class SocialController extends Controller
     /*
 	 * adds a decklist to a user's list of favorites
 	 */
-    public function favoriteAction ()
+    public function favoriteAction (Request $request)
     {
         /* @var $em \Doctrine\ORM\EntityManager */
         $em = $this->get('doctrine')->getManager();
@@ -865,7 +923,6 @@ class SocialController extends Controller
             throw new UnauthorizedHttpException('You must be logged in to comment.');
         }
         
-        $request = $this->getRequest();
         $decklist_id = filter_var($request->get('id'), FILTER_SANITIZE_NUMBER_INT);
         
         /* @var $decklist \Netrunnerdb\BuilderBundle\Entity\Decklist */
@@ -910,15 +967,13 @@ class SocialController extends Controller
     /*
 	 * records a user's comment
 	 */
-    public function commentAction ()
+    public function commentAction (Request $request)
     {
         /* @var $user User */
         $user = $this->getUser();
         if(!$user) {
             throw new UnauthorizedHttpException('You must be logged in to comment.');
         }
-        
-        $request = $this->getRequest();
         
         $decklist_id = filter_var($request->get('id'), FILTER_SANITIZE_NUMBER_INT);
         $decklist = $this->getDoctrine()
@@ -1011,7 +1066,7 @@ class SocialController extends Controller
     /*
 	 * records a user's vote
 	 */
-    public function voteAction ()
+    public function voteAction (Request $request)
     {
         /* @var $em \Doctrine\ORM\EntityManager */
         $em = $this->get('doctrine')->getManager();
@@ -1021,7 +1076,6 @@ class SocialController extends Controller
             throw new UnauthorizedHttpException('You must be logged in to comment.');
         }
                 
-        $request = $this->getRequest();
         $decklist_id = filter_var($request->get('id'), FILTER_SANITIZE_NUMBER_INT);
         
         $decklist = $em->getRepository('NetrunnerdbBuilderBundle:Decklist')->find($decklist_id);
@@ -1118,7 +1172,7 @@ class SocialController extends Controller
     /*
 	 * returns a text file with the content of a decklist
 	 */
-    public function textexportAction ($decklist_id)
+    public function textexportAction ($decklist_id, Request $request)
     {
         $response = new Response();
         $response->setPublic();
@@ -1188,7 +1242,7 @@ class SocialController extends Controller
     /*
 	 * returns a octgn file with the content of a decklist
 	 */
-    public function octgnexportAction ($decklist_id)
+    public function octgnexportAction ($decklist_id, Request $request)
     {
         $response = new Response();
         $response->setPublic();
@@ -1254,13 +1308,13 @@ class SocialController extends Controller
     /*
 	 * displays the main page
 	 */
-    public function indexAction ()
+    public function indexAction (Request $request)
     {
         $response = new Response();
         $response->setPublic();
         $response->setMaxAge($this->container->getParameter('short_cache'));
         
-        $decklists_recent = $this->recent(0, 10)['decklists'];
+        $decklists_recent = $this->recent(0, 10, $request)['decklists'];
         
         $dbh = $this->get('doctrine')->getConnection();
         $rows = $dbh->executeQuery("SELECT
@@ -1292,7 +1346,7 @@ class SocialController extends Controller
     /*
 	 * edits name and description of a decklist by its publisher
 	 */
-    public function editAction ($decklist_id)
+    public function editAction ($decklist_id, Request $request)
     {
         /* @var $em \Doctrine\ORM\EntityManager */
         $em = $this->get('doctrine')->getManager();
@@ -1305,7 +1359,6 @@ class SocialController extends Controller
         if (! $decklist || $decklist->getUser()->getId() != $user->getId())
             throw new UnauthorizedHttpException("You don't have access to this decklist.");
         
-        $request = $this->get('request');
         $name = trim(filter_var($request->request->get('name'), FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES));
         $name = substr($name, 0, 60);
         if (empty($name))
@@ -1351,7 +1404,7 @@ class SocialController extends Controller
     /*
 	 * deletes a decklist if it has no comment, no vote, no favorite
 	*/
-    public function deleteAction ($decklist_id)
+    public function deleteAction ($decklist_id, Request $request)
     {
         /* @var $em \Doctrine\ORM\EntityManager */
         $em = $this->get('doctrine')->getManager();
@@ -1393,7 +1446,7 @@ class SocialController extends Controller
     /*
 	 * displays details about a user and the list of decklists he published
 	 */
-    public function profileAction ($user_id, $user_name, $page)
+    public function profileAction ($user_id, $user_name, $page, Request $request)
     {
         $response = new Response();
         $response->setPublic();
@@ -1412,7 +1465,7 @@ class SocialController extends Controller
             $page = 1;
         $start = ($page - 1) * $limit;
         
-        $result = $this->by_author($user_id, $start, $limit);
+        $result = $this->by_author($user_id, $start, $limit, $request);
         
         $decklists = $result['decklists'];
         $maxcount = $result['count'];
@@ -1465,7 +1518,7 @@ class SocialController extends Controller
     
     }
 
-    public function usercommentsAction ($page)
+    public function usercommentsAction ($page, Request $request)
     {
         $response = new Response();
         $response->setPrivate();
@@ -1545,7 +1598,7 @@ class SocialController extends Controller
     
     }
 
-    public function commentsAction ($page)
+    public function commentsAction ($page, Request $request)
     {
         $response = new Response();
         $response->setPublic();
@@ -1618,7 +1671,7 @@ class SocialController extends Controller
     
     }
 
-    public function searchAction ()
+    public function searchAction (Request $request)
     {
         $response = new Response();
         $response->setPublic();
@@ -1646,13 +1699,17 @@ class SocialController extends Controller
 				order by p.released desc")
             ->fetchAll();
         
-        return $this->render('NetrunnerdbBuilderBundle:Search:form.html.twig',
+        return $this->render('NetrunnerdbBuilderBundle:Search:search.html.twig',
                 array(
                         'pagetitle' => 'Decklist Search',
                         'url' => $this->getRequest()
                             ->getRequestUri(),
                         'factions' => $factions,
-                        'packs' => $packs
+                        'form' => $this->renderView('NetrunnerdbBuilderBundle:Search:form.html.twig',
+                            array(
+                                'packs' => $packs
+                            )
+                        ),
                 ), $response);
     
     }
@@ -1718,7 +1775,7 @@ class SocialController extends Controller
     
     }
 
-    public function donatorsAction ()
+    public function donatorsAction (Request $request)
     {
         $response = new Response();
         $response->setPublic();
