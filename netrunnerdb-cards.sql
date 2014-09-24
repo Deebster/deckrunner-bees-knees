@@ -3,10 +3,11 @@
 -- http://www.phpmyadmin.net
 --
 -- Client: localhost
--- Généré le: Mer 24 Septembre 2014 à 12:27
+-- Généré le: Mer 24 Septembre 2014 à 12:58
 -- Version du serveur: 5.5.38-0ubuntu0.14.04.1
 -- Version de PHP: 5.5.9-1ubuntu4.4
 
+SET FOREIGN_KEY_CHECKS=0;
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
 
@@ -705,6 +706,7 @@ INSERT IGNORE INTO `type` (`id`, `name`, `name_fr`, `name_de`, `name_es`, `name_
 (8, 'Program', 'Programme', 'Programm', 'Programa', 'Program'),
 (9, 'Resource', 'Ressource', 'Ressource', 'Recurso', 'Zasób'),
 (10, 'Upgrade', 'Extension', 'Upgrade', 'Mejora', 'Upgrade');
+SET FOREIGN_KEY_CHECKS=1;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
