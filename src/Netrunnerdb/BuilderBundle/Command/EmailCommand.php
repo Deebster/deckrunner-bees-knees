@@ -54,7 +54,7 @@ class EmailCommand extends ContainerAwareCommand
         $message = \Swift_Message::newInstance();
         
         // Give the message a subject
-        $message->setSubject('Your NetrunnerDB decks');
+        $message->setSubject('Your decks on NetrunnerDB');
         
         // Set the From address with an associative array
         $message->setFrom(array('alsciende@icloud.com' => 'Alsciende'));
@@ -63,10 +63,14 @@ class EmailCommand extends ContainerAwareCommand
         $message->setTo(array($user->getEmail() => $user->getUsername()));
         
         // Give it a body
-        $message->setBody('Here is the message itself');
+        $message->setBody($this->getContainer()->get('templating')->render('NetrunnerdbBuilderBundle:Emails:deck_archive.txt.twig', array(
+        	'username' => $user->getUsername()
+        )));
         
         // And optionally an alternative body
-        $message->addPart('<q>Here is the message itself</q>', 'text/html');
+        $message->addPart($this->getContainer()->get('templating')->render('NetrunnerdbBuilderBundle:Emails:deck_archive.html.twig', array(
+        	'username' => $user->getUsername()
+        )), 'text/html');
         
         $attachment = \Swift_Attachment::fromPath($path, 'application/zip')->setFilename('netrunnerdb.zip');
         $message->attach($attachment);
