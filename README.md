@@ -9,6 +9,7 @@
 - Create the database: `php app/console doctrine:database:create`
 - Create the tables: `php app/console doctrine:schema:update --force`
 - If the above command fails, edit app/config/parameters.yml and try again
+- change card.ts to be 'on update CURRENT_TIMESTAMP'
 - Import the data: mysql -u root -p netrunnerdb < netrunnerdb-cards.sql
 - Configure your web server with the correct DocRoot
 - Point your browser to `/web/app_dev.php`
@@ -28,10 +29,25 @@ To update the deck of the week on the front page:
 
 - `php app/console highlight` 
 
+## Setup an admin account
+
+- register
+- if you haven't setup mail delivery, manually activate your account
+- run `php app/console fos:user:promote --super <username>`
+
 ## Add cards
 
-- login as ROLE_ADMIN (edit your user) or edit `app/config/security.yml`
+- login with admin-level account
 - go to `/admin/card`, `/admin/pack`, `/admin/cycle`, etc.
+
+## Add cards with Excel on existing pack
+
+- note the code of the pack (wla for What Lies Ahead, etc.). let's say it's xxx
+- login with admin-level account
+- go to /api/set/xxx.xls
+- open the downloaded file and add your cards
+- go to /admin/excel/form and upload your file, click 'Validate' on confirmation screen
+- actually the excel file can be the one from another pack, just replace the 2nd column
 
 # Misc Notes
 
