@@ -222,6 +222,7 @@ decklists_searchform:
     methods: [GET]
     defaults:
         _controller: NetrunnerdbBuilderBundle:Social:search
+        _locale: en
     requirements:
         _locale: en|fr|de|es|it|pl
     
@@ -285,6 +286,7 @@ decklists_diff:
     methods: [GET]
     defaults:
         _controller: NetrunnerdbBuilderBundle:Diff:decklistDiff
+        _locale: en
     requirements:
         _locale: en|fr|de|es|it|pl
         decklist1_id: \d+
@@ -295,6 +297,7 @@ user_profile:
     methods: [GET]
     defaults:
         _controller: NetrunnerdbUserBundle:Default:profile
+        _locale: en
     requirements:
         _locale: en|fr|de|es|it|pl
 
@@ -303,6 +306,7 @@ user_profile_save:
     methods: [POST]
     defaults:
         _controller: NetrunnerdbUserBundle:Default:saveProfile
+        _locale: en
     requirements:
         _locale: en|fr|de|es|it|pl
     
@@ -312,6 +316,7 @@ user_profile_view:
     defaults:
         _controller: NetrunnerdbBuilderBundle:Social:profile
         page: 1
+        _locale: en
     requirements:
         _locale: en|fr|de|es|it|pl
         user_id: \d+
@@ -322,6 +327,7 @@ user_comments:
     defaults:
         _controller: NetrunnerdbBuilderBundle:Social:usercomments
         page: 1
+        _locale: en
     requirements:
         _locale: en|fr|de|es|it|pl
 
@@ -330,6 +336,7 @@ all_comments:
     methods: [GET]
     defaults:
         _controller: NetrunnerdbBuilderBundle:Social:comments
+        _locale: en
         page: 1
     requirements:
         _locale: en|fr|de|es|it|pl
@@ -339,6 +346,7 @@ donators:
     methods: [GET]
     defaults:
         _controller: NetrunnerdbBuilderBundle:Social:donators
+        _locale: en
     requirements:
         _locale: en|fr|de|es|it|pl
         

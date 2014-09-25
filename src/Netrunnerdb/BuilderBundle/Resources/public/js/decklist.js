@@ -147,6 +147,8 @@ $(function() {
 	$(document).on('click', '#decklist-social-icon-like', send_like);
 	$(document).on('click', '#decklist-social-icon-favorite', send_favorite);
 	$(document).on('click', '#btn-group-decklist button[id],a[id]', do_action_decklist);
+	$(document).on('click', '#btn-compare', compare_form);
+	$(document).on('click', '#btn-compare-submit', compare_submit);
 	
 	$('#menu-sort').on({
 		change : function(event) {
@@ -158,6 +160,34 @@ $(function() {
 	}, 'a');
 	
 });
+
+function compare_submit() {
+	var url = $('#decklist2_url').val();
+	var id;
+	if(url.match(/^\d+$/)) {
+		id = parseInt(url, 10);
+	} else if(url.match(/decklist\/(\d+)\//)) {
+		id = parseInt(RegExp.$1, 10);
+	}
+	if(id) {
+		var id1, id2;
+		if(Decklist.id < id) {
+			id1 = Decklist.id;
+			id2 = id;
+		} else {
+			id1 = id;
+			id2 = Decklist.id;
+		}
+		location.href = Routing.generate('decklists_diff', {decklist1_id:id1, decklist2_id:id2});
+	}
+}
+
+function compare_form() {
+	$('#compareModal').modal('show');
+	setTimeout(function () {
+		$('#decklist2_url').focus();
+	}, 1000);
+}
 
 function edit_form() {
 	$('#editModal').modal('show');
