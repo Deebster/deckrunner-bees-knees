@@ -103,3 +103,10 @@ fos_oauth_server:
 # FOSJsRoutingBundle Configuration
 fos_js_routing:
     routes_to_expose: [ '.*' ]
+
+# DoctrineExtensions Configuration
+stof_doctrine_extensions:
+    orm:
+        default:
+            timestampable: true
+            

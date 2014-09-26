@@ -23,6 +23,7 @@ class AppKernel extends Kernel
             new Netrunnerdb\BuilderBundle\NetrunnerdbBuilderBundle(),
             new Netrunnerdb\UserBundle\NetrunnerdbUserBundle(),
             new Netrunnerdb\CardsBundle\NetrunnerdbCardsBundle(),
+            new Stof\DoctrineExtensionsBundle\StofDoctrineExtensionsBundle()
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {

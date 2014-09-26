@@ -53,6 +53,9 @@ Netrunnerdb\CardsBundle\Entity\Card:
                 strategy: AUTO
         ts:
             type: datetime
+            gedmo:
+                timestampable:
+                    on:  update
         code:
             type: string
             length: '5'

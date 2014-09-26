@@ -250,6 +250,7 @@ class Card
     public function __construct()
     {
         $this->decklists = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->ts = new \DateTime();
     }
 
     /**
