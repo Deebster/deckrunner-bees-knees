@@ -12,10 +12,10 @@ use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 class EmailCommand extends ContainerAwareCommand
 {
 
-    protected function createArchiveFile($em, $user, &$num)
+    protected function createArchiveFile($em, $user)
     {
         $decks = $this->getContainer()->get('decks')->getByUser($user);
-        $num = 0;
+        if(!count($decks)) return FALSE;
         
         $file = tempnam("tmp", "zip");
         $zip = new \ZipArchive();
@@ -34,11 +34,11 @@ class EmailCommand extends ContainerAwareCommand
                     if($packname == 'Core Set') $packname = 'Core';
                     $qty = $slot['qty'];
                     $content[] = "$cardtitle ($packname) x$qty";
+                    $em->detach($card);
                 }
                 $filename = str_replace('/', ' ', $deck['name']).'.txt';
                 $zip->addFromString($filename, implode("\r\n", $content));
             }
-            $num = $zip->numFiles;
             $res = $zip->close();
         }
         
@@ -75,7 +75,7 @@ class EmailCommand extends ContainerAwareCommand
         $attachment = \Swift_Attachment::fromPath($path, 'application/zip')->setFilename('netrunnerdb.zip');
         $message->attach($attachment);
 
-        return $this->getContainer()->get('mailer')->send($message);
+        $this->getContainer()->get('mailer')->send($message);
     }
     
     protected function configure()
@@ -101,16 +101,21 @@ class EmailCommand extends ContainerAwareCommand
         if($user_id) {
             $users[] = $em->getRepository('NetrunnerdbUserBundle:User')->find($user_id);
         } else {
-            $users = $em->getRepository('NetrunnerdbUserBundle:User')->findAll();
+            $users = $em->getRepository('NetrunnerdbUserBundle:User')->findBy(array('locked' => FALSE));
         }
-        
+        $nb=3;
         foreach($users as $user) {
             $output->writeln($user->getUsername());
-            $path = $this->createArchiveFile($em, $user, $num);
-            $output->writeln("$num decks.");
-            if($path !== FALSE && $num > 0) {
-                $res = $this->sendArchive($em, $user, $path);
+            $path = $this->createArchiveFile($em, $user);
+            if($path !== FALSE) {
+                $this->sendArchive($em, $user, $path);
+                $output->writeln("  Sent.");
             }
+            $user->setLocked(TRUE);
+            $em->flush($user);
+            $output->writeln("  Locked.");
+            $em->detach($user);
+            if($nb-- == 0) break;
         }
     }
 }
