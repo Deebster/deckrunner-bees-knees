@@ -21,7 +21,7 @@ NRDB.deck_gallery = {};
 			qtys.push(record.indeck);
 		});
 		for (var i = 0; i < images.length; i++) {
-			var cell = $('<td><div><img src="' + imagesrc[i] + '"><div>'+qtys[i]+'</div></div></td>');
+			var cell = $('<td><div><img src="' + images[i] + '"><div>'+qtys[i]+'</div></div></td>');
 			$('#deck_gallery tr').append(cell.data('index', i));
 		}
 	}

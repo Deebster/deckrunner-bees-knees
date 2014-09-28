@@ -67,12 +67,14 @@ class SuggestionsCommand extends ContainerAwareCommand
                 from card c
                 join deckslot d on d.card_id=c.id
                 where c.side_id=?
-                group by c.id, c.code
+                group by c.id, c.code, c.faction_id
                 order by c.id", array($side_id))->fetchAll();
 
         $cardIndexById = array();
+        $maxnbdecks = 0;
         foreach($cardsByIndex as $index => $card) {
             $cardIndexById[intval($card['id'])] = $index;
+            if($maxnbdecks < $card['nbdecks']) $maxnbdecks = $card['nbdecks'];
         }
         $cardCodesByIndex = array();
         foreach($cardsByIndex as $index => $card) {
@@ -113,18 +115,21 @@ class SuggestionsCommand extends ContainerAwareCommand
             }
         }
         
+        
         /*
          * now we have to weight the cards. The numbers in $matrix are the number of decks
          * that include both x and y cards, so they are relative to the commonness of both
          * cards.
-         * the choice made is to show the probability of the conjonction based on the least
-         * common card. So that uncommon cards have the same weight in the suggestions as
-         * common cards.
          */
         
         for($i=0; $i<count($matrix); $i++) {
             for($j=0; $j<$i; $j++) {
                 $nbdecks = min($cardsByIndex[$i]['nbdecks'], $cardsByIndex[$j]['nbdecks']);
+                //$nbdecks = $cardsByIndex[$i]['nbdecks'] + $cardsByIndex[$j]['nbdecks'];
+                //$nbdecks = max($cardsByIndex[$i]['nbdecks'], $cardsByIndex[$j]['nbdecks']);
+                //$nbdecks = $cardsByIndex[$i]['faction_id'] == $cardsByIndex[$j]['faction_id'] ? 1000 : 2000;
+                //$nbdecks = $maxnbdecks;
+                $nbdecks = max(100, min($cardsByIndex[$i]['nbdecks'], $cardsByIndex[$j]['nbdecks']));
                 $matrix[$i][$j] = round($matrix[$i][$j] / $nbdecks * 100);
             }
         }

@@ -22,6 +22,15 @@ NRDB.data_loaded.add(function() {
 	}
 	$('input[name=core-set-' + CoreSets + ']').prop('checked', true);
 
+	var localStorageSuggestions;
+	if (localStorage
+			&& (localStorageSuggestions = parseInt(localStorage
+					.getItem('show_suggestions'), 10)) !== null
+			&& [ 0, 3, 10 ].indexOf(localStorageSuggestions) > -1) {
+		NRDB.suggestions.number = localStorageSuggestions;
+	}
+	$('input[name=show-suggestions-' + NRDB.suggestions.number + ']').prop('checked', true);
+
 	NRDB.data.sets({
 		code : "alt"
 	}).remove();
@@ -288,6 +297,36 @@ $(function() {
 			refresh_collection();
 		}
 	});
+	$('input[name=show-suggestions-0]').on({
+		change : function(event) {
+			$('input[name=show-suggestions-3]').prop('checked', false);
+			$('input[name=show-suggestions-10]').prop('checked', false);
+			NRDB.suggestions.number = 0;
+			if (localStorage)
+				localStorage.setItem('show_suggestions', NRDB.suggestions.number);
+			NRDB.suggestions.show();
+		}
+	});
+	$('input[name=show-suggestions-3]').on({
+		change : function(event) {
+			$('input[name=show-suggestions-0]').prop('checked', false);
+			$('input[name=show-suggestions-10]').prop('checked', false);
+			NRDB.suggestions.number = 3;
+			if (localStorage)
+				localStorage.setItem('show_suggestions', NRDB.suggestions.number);
+			NRDB.suggestions.show();
+		}
+	});
+	$('input[name=show-suggestions-10]').on({
+		change : function(event) {
+			$('input[name=show-suggestions-0]').prop('checked', false);
+			$('input[name=show-suggestions-3]').prop('checked', false);
+			NRDB.suggestions.number = 10;
+			if (localStorage)
+				localStorage.setItem('show_suggestions', NRDB.suggestions.number);
+			NRDB.suggestions.show();
+		}
+	});
 	$('thead').on({
 		click : handle_header_click
 	}, 'a[data-sort]');
@@ -392,7 +431,7 @@ function handle_submit(event) {
 function handle_quantity_change(event) {
 	var index = $(this).closest('.card-container').data('index')
 			|| $(this).closest('div.modal').data('index');
-	var in_collection = $(this).closest('.collection').size();
+	var in_collection = $(this).closest('#collection').size();
 	var quantity = parseInt($(this).val(), 10);
 	$(this).closest('.card-container')[quantity ? "addClass" : "removeClass"]
 			('in-deck');
@@ -440,22 +479,27 @@ function handle_quantity_change(event) {
 		refresh_collection();
 	} else {
 		$.each(CardDivs, function(nbcols, rows) {
-			if (rows && rows[index])
+			// rows is an array of card rows
+			if (rows && rows[index]) {
+				// rows[index] is the card row of our card
 				rows[index].find('input[name="qty-' + index + '"]').each(
-						function(i, element) {
-							if ($(element).val() != quantity) {
-								$(element).prop('checked', false).closest(
-								'label').removeClass('active');
-							} else {
-								if(!in_collection) {
-									$(element).prop('checked', true).closest(
-									'label').addClass('active');
-								}
+					function(i, element) {
+						if ($(element).val() != quantity) {
+							$(element).prop('checked', false).closest(
+							'label').removeClass('active');
+						} else {
+							if(!in_collection) {
+								$(element).prop('checked', true).closest(
+								'label').addClass('active');
 							}
-						});
+						}
+					}
+				);
+			}
 		});
 	}
 	$('div.modal').modal('hide');
+	NRDB.suggestions.compute();
 	if (InputByTitle)
 		$('input[name=title]').typeahead('setQuery', '').focus().blur();
 }
@@ -562,6 +606,18 @@ function build_div(record) {
 	return div;
 }
 
+function is_card_usable(record) {
+	if (Identity.code == "03002"
+			&& record.faction_code == "jinteki")
+		return false;
+	if (record.type_code == "agenda"
+			&& record.faction_code != "neutral"
+			&& record.faction_code != Identity.faction_code
+			&& Identity.faction_code != "neutral")
+		return false;
+	return true;
+}
+
 function update_filtered() {
 	$('#collection-table').empty();
 	$('#collection-grid').empty();
@@ -576,15 +632,7 @@ function update_filtered() {
 						if (ShowOnlyDeck && !record.indeck)
 							return;
 
-						var unusable = false;
-						if (Identity.code == "03002"
-								&& record.faction_code == "jinteki")
-							unusable = true;
-						if (record.type_code == "agenda"
-								&& record.faction_code != "neutral"
-								&& record.faction_code != Identity.faction_code
-								&& Identity.faction_code != "neutral")
-							unusable = true;
+						var unusable = !is_card_usable(record);
 
 						if (HideDisabled && unusable)
 							return;

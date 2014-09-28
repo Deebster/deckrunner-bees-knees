@@ -5,6 +5,7 @@
 <script src="{{ asset('/web/bundles/netrunnerdbbuilder/js/nrdb.draw_simulator.js') }}"></script>
 <script src="{{ asset('/web/bundles/netrunnerdbbuilder/js/nrdb.card_modal.js') }}"></script>
 <script src="{{ asset('/web/bundles/netrunnerdbbuilder/js/nrdb.smart_filter.js') }}"></script>
+<script src="{{ asset('/web/bundles/netrunnerdbbuilder/js/nrdb.suggestions.js') }}"></script>
 <script src="{{ asset('/web/bundles/netrunnerdbbuilder/js/deck.js') }}"></script>
 <script type="text/javascript">
 
@@ -56,6 +57,16 @@ var Filters = {},
 <div class="row" id="deck-content" style="margin-bottom:10px;min-height:300px">
 </div><!-- /#deck-content -->
 <!-- Deck Content -->
+
+<!-- Suggestions -->
+<table class="table table-condensed" id="table-suggestions">
+<thead>
+<tr><th colspan="6"><span class="glyphicon glyphicon-fast-forward"></span> Card suggestions</th></tr>
+</thead>
+<tbody>
+</tbody>
+</table>
+<!-- Suggestions -->
 
 <!-- Name and Notes Form -->
 <div class="row" style="margin-bottom:10px">
@@ -172,7 +183,10 @@ var Filters = {},
 					<li><a href="#"><label><input type="checkbox" name="core-set-1"> Use 1 Core Set</label></a></li>
 					<li><a href="#"><label><input type="checkbox" name="core-set-2"> Use 2 Core Sets</label></a></li>
 					<li><a href="#"><label><input type="checkbox" name="core-set-3"> Use 3 Core Sets</label></a></li>
-				</ul>
+					<li><a href="#"><label><input type="checkbox" name="show-suggestions-0"> Show no suggestion</label></a></li>
+					<li><a href="#"><label><input type="checkbox" name="show-suggestions-3"> Show 3 suggestions</label></a></li>
+					<li><a href="#"><label><input type="checkbox" name="show-suggestions-10"> Show 10 suggestions</label></a></li>
+					</ul>
 			</div><!-- /.btn-group -->
 		</div><!-- /.pull-right -->
 	</div><!-- /.col-sm-7 -->
