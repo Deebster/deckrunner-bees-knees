@@ -1,10 +1,9 @@
-@font-face{font-family:'exomedium';src:url('../fonts/exo-medium-webfont.eot');src:url('../fonts/exo-medium-webfont.eot?#iefix') format('embedded-opentype'),url('../fonts/exo-medium-webfont.woff') format('woff'),url('../fonts/exo-medium-webfont.ttf') format('truetype'),url('../fonts/exo-medium-webfont.svg#exomedium') format('svg');font-weight:normal;font-style:normal}
 @font-face{font-family:'exoregular';src:url('../fonts/exo-regular-webfont.eot');src:url('../fonts/exo-regular-webfont.eot?#iefix') format('embedded-opentype'),url('../fonts/exo-regular-webfont.woff') format('woff'),url('../fonts/exo-regular-webfont.ttf') format('truetype'),url('../fonts/exo-regular-webfont.svg#exoregular') format('svg');font-weight:normal;font-style:normal}
 @font-face{font-family:'exodemibold';src:url('../fonts/exo-semibold-webfont.eot');src:url('../fonts/exo-semibold-webfont.eot?#iefix') format('embedded-opentype'),url('../fonts/exo-semibold-webfont.woff') format('woff'),url('../fonts/exo-semibold-webfont.ttf') format('truetype'),url('../fonts/exo-semibold-webfont.svg#exodemibold') format('svg');font-weight:normal;font-style:normal}
 @font-face{font-family:'exolight';src:url('../fonts/exo-light-webfont.eot');src:url('../fonts/exo-light-webfont.eot?#iefix') format('embedded-opentype'),url('../fonts/exo-light-webfont.woff') format('woff'),url('../fonts/exo-light-webfont.ttf') format('truetype'),url('../fonts/exo-light-webfont.svg#exolight') format('svg');font-weight:normal;font-style:normal}
 
 h1,h2,h3,h4,h5,h6{font-family:exoregular,sans-serif}
-.navbar{font-family:exomedium,sans-serif}
+.navbar{font-family:exoregular,sans-serif}
 #push{clear:both}
 .type-icon,.faction-icon{vertical-align:text-bottom}
 
